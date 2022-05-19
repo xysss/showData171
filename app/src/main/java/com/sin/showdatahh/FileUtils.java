@@ -262,12 +262,10 @@ public class FileUtils {
     }
 
     //写入自定义Log
-    public static String saveLog(Context context, String s, String name, String number, String countId,String timeStr) {
+    public static String saveLog(Context context, String value, String wholeFileName, String countId,String timeStr) {
         String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()) + "\r\n";
-        String sb = countId + "       " + s + "       "+timeStr+ "       "+format+ "\n";
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        String time = formatter.format(new Date());
-        String fileName = name + "-" + number + "-" + time + ".txt";
+        String sb = countId + "       " + value + "       "+timeStr+ "       "+format+ "\n";
+
         if (FileUtils.hasSdcard()) {
            /* String path = Environment.getExternalStorageDirectory().getAbsolutePath()
                     + File.separator + "171DataSave" + File.separator;*/
@@ -279,7 +277,7 @@ public class FileUtils {
             }
             FileOutputStream fos = null;
             try {
-                fos = new FileOutputStream(path + fileName, true);
+                fos = new FileOutputStream(path + wholeFileName, true);
                 fos.write(sb.getBytes());
                 fos.flush();
                 fos.close();
@@ -289,13 +287,13 @@ public class FileUtils {
                 e.printStackTrace();
             }
         }
-        return fileName;
+        return wholeFileName;
     }
 
     //写入自定义Log
-    public static String saveInfo(Context context, String content, String name) {
+    public static String saveInfo(Context context, String description, String name,String alarmFileName) {
         String format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis()) + "\r\n";
-        String saveContent = format + "         " + content + "\n";
+        String saveContent = format + "  "+description + "  "+ alarmFileName+"\n";
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         String time = formatter.format(new Date());
         String fileName = name + ".txt";

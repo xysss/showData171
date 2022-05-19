@@ -16,12 +16,13 @@
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:layout_height="wrap_content">
+
             <EditText
-                android:layout_width="wrap_content"
                 android:id="@+id/FileName_EditText"
-                android:hint="请输入设备编号"
-                android:layout_height="wrap_content">
-            </EditText>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="请输入设备编号"></EditText>
+
             <Button
                 android:id="@+id/button3"
                 android:layout_width="wrap_content"

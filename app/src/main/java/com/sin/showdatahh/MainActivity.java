@@ -27,7 +27,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -59,9 +62,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int count = 1;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
+    private String getBeginTime="getBeginTime";
     private String fileNameKey="fileName";
     private String descriptionKey="description";
     private String dataKey="data";
+    String beginTime="";
 
 
     @Override
@@ -158,24 +163,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStop() {
         super.onStop();
-        editor = getSharedPreferences(dataKey, MODE_PRIVATE).edit();
-        editor.putString(fileNameKey, fileName);
-        editor.putString(descriptionKey, description);
-        editor.apply();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        editor = getSharedPreferences(dataKey, MODE_PRIVATE).edit();
         preferences = getSharedPreferences(dataKey, MODE_PRIVATE);
-        fileName = preferences.getString(fileNameKey, "");
+        fileName = preferences.getString(fileNameKey, "admin");
         if (!fileName.equals("")) {
             FileName_EditText.setText(fileName);
         }
-        description = preferences.getString(descriptionKey, "");
+        description = preferences.getString(descriptionKey, "空");
         if (!description.equals("")) {
             Alarm_description_editText.setText(description);
         }
+        beginTime = preferences.getString(getBeginTime, "空");
+
     }
 
     @Override
@@ -185,6 +189,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 show("", 171);
                 sendUdp(testCode4);
                 isopen = true;
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                beginTime= formatter.format(new Date());
+                editor.putString(getBeginTime, beginTime);
+                editor.apply();
+
                 break;
             case R.id.button2:  //停止接收
                 show("", 171);
@@ -198,7 +207,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     fileName = "admin";
                 } else {
                     Toast.makeText(MainActivity.this, "设置成功！", Toast.LENGTH_SHORT).show();
+                    editor.putString(fileNameKey, fileName);
+                    editor.apply();
                 }
+                FileName_EditText.setText(fileName);
                 break;
             case R.id.button4:
                 showVerify();
@@ -210,8 +222,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     description = "空";
                 } else {
                     Toast.makeText(MainActivity.this, "设置成功！", Toast.LENGTH_SHORT).show();
-                    FileUtils.saveInfo(MainActivity.this,description, "报警描述");
+                    String alarmFileName=fileName + "——1——" + beginTime + ".txt";
+                    FileUtils.saveInfo(MainActivity.this,description, "报警描述",alarmFileName);
+                    editor.putString(descriptionKey, description);
+                    editor.apply();
                 }
+                Alarm_description_editText.setText(description);
                 break;
             default:
                 break;
@@ -392,14 +408,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             resultStrings5[k] = "" + dealtest5 + "  ：  " + dealtest8;
                             resultStrings6[k] = "" + dealtest6 + "  ：  " + dealtest8;
                             Log.e("saved","begin"+count);
-                            FileUtils.saveLog(MainActivity.this,resultStrings1[k], fileName, "1", String.valueOf(count),timeStr2);
-                            FileUtils.saveLog(MainActivity.this,resultStrings2[k], fileName, "2", String.valueOf(count),timeStr2);
-                            FileUtils.saveLog(MainActivity.this,resultStrings3[k], fileName, "3", String.valueOf(count),timeStr2);
-                            FileUtils.saveLog(MainActivity.this,resultStrings4[k], fileName, "4", String.valueOf(count),timeStr2);
-                            FileUtils.saveLog(MainActivity.this,resultStrings5[k], fileName, "5", String.valueOf(count),timeStr2);
-                            FileUtils.saveLog(MainActivity.this,resultStrings6[k], fileName, "6", String.valueOf(count),timeStr2);
-                            count++;
 
+                            String wholeFileName1=fileName + "——1——" + beginTime + ".txt";
+                            String wholeFileName2=fileName + "——2——" + beginTime + ".txt";
+                            String wholeFileName3=fileName + "——3——" + beginTime + ".txt";
+                            String wholeFileName4=fileName + "——4——" + beginTime + ".txt";
+                            String wholeFileName5=fileName + "——5——" + beginTime + ".txt";
+                            String wholeFileName6=fileName + "——6——" + beginTime + ".txt";
+
+                            FileUtils.saveLog(MainActivity.this,resultStrings1[k], wholeFileName1, String.valueOf(count),timeStr2);
+                            FileUtils.saveLog(MainActivity.this,resultStrings2[k], wholeFileName2, String.valueOf(count),timeStr2);
+                            FileUtils.saveLog(MainActivity.this,resultStrings3[k], wholeFileName3, String.valueOf(count),timeStr2);
+                            FileUtils.saveLog(MainActivity.this,resultStrings4[k], wholeFileName4, String.valueOf(count),timeStr2);
+                            FileUtils.saveLog(MainActivity.this,resultStrings5[k], wholeFileName5, String.valueOf(count),timeStr2);
+                            FileUtils.saveLog(MainActivity.this,resultStrings6[k], wholeFileName6, String.valueOf(count),timeStr2);
+
+                            count++;
 
                            /* stringBuilder1.append(""+dealtest1+",");
                             stringBuilder2.append(""+dealtest2+",");
